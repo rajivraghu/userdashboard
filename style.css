@@ -44,7 +44,7 @@ input:focus {
   background: #fff;
 }
 button, .btn {
-  background: #4251f5;
+  background: green;
   color: #fff;
   padding: 0.7em 1.2em;
   border: none;
@@ -55,7 +55,7 @@ button, .btn {
   margin-top: 0.1em;
 }
 button:hover, .btn:hover {
-  background: #2733a6;
+  background: darkgreen;
 }
 .cancel-btn {
   background: #888;
