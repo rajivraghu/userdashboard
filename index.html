@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Registration & Listing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f7fafd;
+      margin: 0;
+      min-height: 100vh;
+      padding: 0;
+    }
+    .container {
+      background: #fff;
+      margin: 40px auto;
+      padding: 2rem 2.5rem;
+      border-radius: 18px;
+      box-shadow: 0 2px 12px #0001;
+      max-width: 520px;
+    }
+    h2 {
+      text-align: center;
+      color: #4251f5;
+      margin-bottom: 1.4em;
+      font-size: 1.6em;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+      margin-bottom: 2em;
+    }
+    label {
+      font-size: 1em;
+      color: #444;
+      margin-bottom: 0.15em;
+    }
+    input[type="text"], input[type="email"], input[type="password"] {
+      padding: 0.65em 0.9em;
+      border: 1px solid #dde1ed;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: border 0.2s;
+      background: #f6f8fc;
+      width: 100%;
+    }
+    input:focus {
+      border-color: #4251f5;
+      background: #fff;
+    }
+    button, .btn {
+      background: #4251f5;
+      color: #fff;
+      padding: 0.7em 1.2em;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.18s;
+      margin-top: 0.1em;
+    }
+    button:hover, .btn:hover {
+      background: #2733a6;
+    }
+    .cancel-btn {
+      background: #888;
+      margin-left: 0.7em;
+    }
+    .cancel-btn:hover {
+      background: #444;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #f9fafe;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 1em;
+    }
+    th, td {
+      padding: 0.8em 1em;
+      text-align: left;
+    }
+    th {
+      background: #eef2fa;
+      color: #4251f5;
+      font-weight: 600;
+      font-size: 1em;
+      border-bottom: 2px solid #dde1ed;
+    }
+    tr:not(:last-child) td {
+      border-bottom: 1px solid #ececec;
+    }
+    td {
+      font-size: 1em;
+    }
+    .actions {
+      display: flex;
+      gap: 0.4em;
+    }
+    .edit-btn {
+      background: #10b981;
+    }
+    .edit-btn:hover {
+      background: #047857;
+    }
+    .delete-btn {
+      background: #ef4444;
+    }
+    .delete-btn:hover {
+      background: #991b1b;
+    }
+    .no-users {
+      text-align: center;
+      color: #888;
+      font-size: 1.08em;
+      margin-top: 1em;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 1em 0.4em; }
+      table, th, td { font-size: 0.95em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>User Registration</h2>
+    <form id="userForm" autocomplete="off">
+      <div>
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" required />
+      </div>
+      <div>
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required />
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required minlength="4" />
+      </div>
+      <div style="display:flex;align-items:center;">
+        <button type="submit" id="submitBtn">Register</button>
+        <button type="button" id="cancelBtn" class="btn cancel-btn" style="display:none;">Cancel</button>
+      </div>
+    </form>
+    <div class="table-responsive">
+      <table id="usersTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th style="min-width:110px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="usersTbody">
+          <!-- users will be injected here -->
+        </tbody>
+      </table>
+      <div class="no-users" id="noUsersMsg" style="display:none;">No users registered yet.</div>
+    </div>
+  </div>
+  <script>
+    let editingUserIndex = null;
+
+    function getUsers() {
+      return JSON.parse(localStorage.getItem('users') || '[]');
+    }
+    function setUsers(users) {
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    function renderUsersTable() {
+      const users = getUsers();
+      const tbody = document.getElementById('usersTbody');
+      const noUsersMsg = document.getElementById('noUsersMsg');
+      tbody.innerHTML = '';
+      if (!users.length) {
+        noUsersMsg.style.display = 'block';
+        return;
+      }
+      noUsersMsg.style.display = 'none';
+      users.forEach((u, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${i+1}</td>
+          <td>${u.name}</td>
+          <td>${u.email}</td>
+          <td>
+            <div class="actions">
+              <button class="btn edit-btn" onclick="editUser(${i})">Edit</button>
+              <button class="btn delete-btn" onclick="deleteUser(${i})">Delete</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function resetForm() {
+      editingUserIndex = null;
+      document.getElementById('userForm').reset();
+      document.getElementById('submitBtn').innerText = 'Register';
+      document.getElementById('cancelBtn').style.display = 'none';
+    }
+
+    document.getElementById('userForm').onsubmit = function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      let users = getUsers();
+
+      if (editingUserIndex !== null) {
+        users[editingUserIndex] = { name, email, password };
+      } else {
+        users.push({ name, email, password });
+      }
+      setUsers(users);
+      renderUsersTable();
+      resetForm();
+    };
+
+    document.getElementById('cancelBtn').onclick = resetForm;
+
+    // Attach to window for inline use in HTML
+    window.editUser = function(idx) {
+      const users = getUsers();
+      const user = users[idx];
+      document.getElementById('name').value = user.name;
+      document.getElementById('email').value = user.email;
+      document.getElementById('password').value = user.password;
+      editingUserIndex = idx;
+      document.getElementById('submitBtn').innerText = 'Update';
+      document.getElementById('cancelBtn').style.display = '';
+    };
+
+    window.deleteUser = function(idx) {
+      if (confirm('Are you sure you want to delete this user?')) {
+        let users = getUsers();
+        users.splice(idx, 1);
+        setUsers(users);
+        renderUsersTable();
+        resetForm();
+      }
+    };
+
+    // Initial render
+    renderUsersTable();
+  </script>
+</body>
+</html>
