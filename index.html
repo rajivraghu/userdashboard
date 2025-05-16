@@ -2,136 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>User Registration & Listing</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <title>Hello World</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="container">
-    <h2>User Registrationwwww</h2>
-    <form id="userForm" autocomplete="off">
-      <div>
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name" required />
-      </div>
-      <div>
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" required />
-      </div>
-      <div>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" required minlength="4" />
-      </div>
-      <div style="display:flex;align-items:center;">
-        <button type="submit" id="submitBtn">Register</button>
-        <button type="button" id="cancelBtn" class="btn cancel-btn" style="display:none;">Cancel</button>
-      </div>
-    </form>
-    <div class="table-responsive">
-      <table id="usersTable">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th style="min-width:110px;">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="usersTbody">
-          <!-- users will be injected here -->
-        </tbody>
-      </table>
-      <div class="no-users" id="noUsersMsg" style="display:none;">No users registered yet.</div>
-    </div>
+<body class="bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-10 rounded-2xl shadow-xl text-center animate-fade-in">
+    <h1 class="text-4xl font-bold text-gray-800 mb-4">Hello, World!</h1>
+    <p class="text-lg text-gray-600">Welcome to your beautifully styled webpage.</p>
   </div>
-  <script>
-   let editingUserIndex = null;
-
-    function getUsers() {
-      return JSON.parse(localStorage.getItem('users') || '[]');
+  <style>
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    function setUsers(users) {
-      localStorage.setItem('users', JSON.stringify(users));
+    .animate-fade-in {
+      animation: fade-in 1s ease-out;
     }
-
-    function renderUsersTable() {
-      const users = getUsers();
-      const tbody = document.getElementById('usersTbody');
-      const noUsersMsg = document.getElementById('noUsersMsg');
-      tbody.innerHTML = '';
-      if (!users.length) {
-        noUsersMsg.style.display = 'block';
-        return;
-      }
-      noUsersMsg.style.display = 'none';
-      users.forEach((u, i) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${i+1}</td>
-          <td>${u.name}</td>
-          <td>${u.email}</td>
-          <td>
-            <div class="actions">
-              <button class="btn edit-btn" onclick="editUser(${i})">Edit</button>
-              <button class="btn delete-btn" onclick="deleteUser(${i})">Delete</button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function resetForm() {
-      editingUserIndex = null;
-      document.getElementById('userForm').reset();
-      document.getElementById('submitBtn').innerText = 'Register';
-      document.getElementById('cancelBtn').style.display = 'none';
-    }
-
-    document.getElementById('userForm').onsubmit = function(e) {
-      e.preventDefault();
-      return true;
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      let users = getUsers();
-
-      if (editingUserIndex !== null) {
-        users[editingUserIndex] = { name, email, password };
-      } else {
-        users.push({ name, email, password });
-      }
-      setUsers(users);
-      renderUsersTable();
-      resetForm();
-    };
-
-    document.getElementById('cancelBtn').onclick = resetForm;
-
-    // Attach to window for inline use in HTML
-    window.editUser = function(idx) {
-      const users = getUsers();
-      const user = users[idx];
-      document.getElementById('name').value = user.name;
-      document.getElementById('email').value = user.email;
-      document.getElementById('password').value = user.password;
-      editingUserIndex = idx;
-      document.getElementById('submitBtn').innerText = 'Update';
-      document.getElementById('cancelBtn').style.display = '';
-    };
-
-    window.deleteUser = function(idx) {
-      if (confirm('Are you sure you want to delete this user?')) {
-        let users = getUsers();
-        users.splice(idx, 1);
-        setUsers(users);
-        renderUsersTable();
-        resetForm();
-      }
-    };
-
-    // Initial render
-    renderUsersTable();
-  </script>
+  </style>
 </body>
 </html>
