@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #141414;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            padding: 20px 50px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #e50914;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #e50914;
+        }
+
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=1920');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            padding-left: 50px;
+        }
+
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: #e50914;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #cc0812;
+        }
+
+        .btn-secondary {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid white;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+
+        .movie-section {
+            padding: 50px 50px 20px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .movie-row {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding-bottom: 10px;
+        }
+
+        .movie-row::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .movie-row::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+
+        .movie-row::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+
+        .movie-card {
+            flex: 0 0 250px;
+            height: 150px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .movie-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 10px;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .movie-card:hover .movie-overlay {
+            transform: translateY(0);
+        }
+
+        .movie-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .movie-year {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .hero {
+                padding-left: 20px;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .movie-section {
+                padding: 30px 20px 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">NETFLIX</div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#movies">Movies</a>
+            <a href="#tv">TV Shows</a>
+            <a href="#mylist">My List</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Cinema Paradise</h1>
+            <p>Experience the magic of storytelling with our curated collection of cinematic masterpieces.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary">▶ Play</button>
+                <button class="btn btn-secondary">ℹ More Info</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="movie-section">
+        <h2 class="section-title">Trending Now</h2>
+        <div class="movie-row">
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=500" alt="Movie 1">
+                <div class="movie-overlay">
+                    <div class="movie-title">Epic Adventure</div>
+                    <div class="movie-year">2024</div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=500" alt="Movie 2">
+                <div class="movie-overlay">
+                    <div class="movie-title">Space Odyssey</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?q=80&w=500" alt="Movie 3">
+                <div class="movie-overlay">
+                    <div class="movie-title">Urban Legends</div>
+                    <div class="movie-year">2024</div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1535016120720-40c646be5580?q=80&w=500" alt="Movie 4">
+                <div class="movie-overlay">
+                    <div class="movie-title">Night Tales</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1478720568477-152d81b1640b?q=80&w=500" alt="Movie 5">
+                <div class="movie-overlay">
+                    <div class="movie-title">Ocean Dreams</div>
+                    <div class="movie-year">2024</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="movie-section">
+        <h2 class="section-title">Popular Movies</h2>
+        <div class="movie-row">
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1594736797933-d0eb1ff2e2d6?q=80&w=500" alt="Movie 6">
+                <div class="movie-overlay">
+                    <div class="movie-title">Mountain Quest</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1540224871915-bc55ffb219b5?q=80&w=500" alt="Movie 7">
+                <div class="movie-overlay">
+                    <div class="movie-title">City Lights</div>
+                    <div class="movie-year">2024</div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=500" alt="Movie 8">
+                <div class="movie-overlay">
+                    <div class="movie-title">Forest Mystery</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?q=80&w=500" alt="Movie 9">
+                <div class="movie-overlay">
+                    <div class="movie-title">Desert Storm</div>
+                    <div class="movie-year">2024</div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1522158637959-30385a09e0da?q=80&w=500" alt="Movie 10">
+                <div class="movie-overlay">
+                    <div class="movie-title">Winter Tale</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="movie-section">
+        <h2 class="section-title">Award Winners</h2>
+        <div class="movie-row">
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?q=80&w=500" alt="Movie 11">
+                <div class="movie-overlay">
+                    <div class="movie-title">Golden Nights</div>
+                    <div class="movie-year">2024</div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1593858415893-534a40471ee6?q=80&w=500" alt="Movie 12">
+                <div class="movie-overlay">
+                    <div class="movie-title">Silent Waters</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1511302657592-a60ad24cae61?q=80&w=500" alt="Movie 13">
+                <div class="movie-overlay">
+                    <div class="movie-title">Classic Cinema</div>
+                    <div class="movie-year">2024</div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1533982338880-733e1cc678f5?q=80&w=500" alt="Movie 14">
+                <div class="movie-overlay">
+                    <div class="movie-title">Art House</div>
+                    <div class="movie-year">2023</div>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1542209785-f9463b80822a?q=80&w=500" alt="Movie 15">
+                <div class="movie-overlay">
+                    <div class="movie-title">Indie Gems</div>
+                    <div class="movie-year">2024</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const movieCards = document.querySelectorAll('.movie-card');
+        movieCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const title = this.querySelector('.movie-title').textContent;
+                alert(`Playing: ${title}`);
+            });
+        });
+
+        const scrollAmount = 300;
+        document.querySelectorAll('.movie-row').forEach(row => {
+            let isScrolling = false;
+            
+            row.addEventListener('wheel', function(e) {
+                if (!isScrolling) {
+                    isScrolling = true;
+                    e.preventDefault();
+                    this.scrollLeft += e.deltaY > 0 ? scrollAmount : -scrollAmount;
+                    setTimeout(() => {
+                        isScrolling = false;
+                    }, 300);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
